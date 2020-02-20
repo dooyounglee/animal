@@ -1,0 +1,20 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div th:insert="~{fragments/header::header}"></div>
+	<a href="/board/list">게시판</a>
+	<form action="/board/write" method="post" th:with="b=${b}">
+		<input type="hidden" name="b_no" th:value="${b}?${b.b_no}:''"><br>
+		<input name="title" th:value="${b}?${b.title}:''"><br>
+		<input name="content" th:value="${b}?${b.content}:''"><br>
+		<input type="text" name="writer" th:value="${#authentication.principal} eq 'anonymousUser'?'anonymousUser':${#authentication.principal.member.email}" readonly>
+		<button type="submit" th:text="${b}?'edit':'write'">write</button>
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+	</form>
+	<div th:insert="~{fragments/footer::footer}"></div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div th:insert="~{fragments/header::header}"></div>
+	<a href="/board/list">list</a>
+	<a href="/board/write">write</a><br>
+	<th:block th:each="b:${list}">
+		<a th:attr="href='/board/get?b_no='+${b.b_no}">[[${b}]]</a><br>
+	</th:block>
+	<div th:insert="~{fragments/footer::footer}"></div>
+</body>
+</html>

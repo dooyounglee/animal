@@ -1,0 +1,19 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div th:insert="~{fragments/header::header}"></div>
+	<h1>Join</h1>
+	<form action="/member/join" method="post">
+		<input type="text" name="email" value="" /><br>
+		<input type="password" name="pw" value="" />
+		<input type="checkbox" name="role[0].roleName" value="All" checked>All
+		<button type="submit">join</button><a href="/member/login">login</a><br>
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /><br>
+	</form>
+	<div th:insert="~{fragments/footer::footer}"></div>
+</body>
+</html>
