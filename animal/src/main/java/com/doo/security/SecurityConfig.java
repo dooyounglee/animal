@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		log.info("security config..............");;
 
-		http.authorizeRequests().antMatchers("/*").permitAll();
+		http.authorizeRequests().antMatchers("/**").permitAll();
 		
 		http.formLogin().loginPage("/member/login");
 		http.logout().logoutUrl("/member/logout").invalidateHttpSession(true).logoutSuccessUrl("/");; //

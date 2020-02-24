@@ -68,21 +68,52 @@
                 <!-- ============================================================== -->
                 <!-- Start Page Content -->
                 <!-- ============================================================== -->
-                <!-- Row -->
                 <div class="row">
-                    <!-- column -->
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Q&A</h4>
-                                <a class="btn btn-success float-left" href="write.qna">문의하기</a><br>
-                                <h6 class="card-subtitle"></code></h6>
-                                main
+                            	<div class="form-group mt-12 row">
+                                    <div class="col-md-12">
+                                        <input class="form-control" id="title" th:value="${b}?${b.title}:''">
+                                    </div>
+                                </div>
+                                <div class="summernote">
+                                    <h3>Default Summernote</h3>
+                                </div>
+                            </div>
+                            <button class="btn btn-success" onclick="abc()" th:text="${b}?'edit':'write'">aaa</button>
+                        </div>
+                        
+                        <!-- <div class="card">
+                            <div class="card-body">
+                                <div class="inline-editor">
+                                    <h4 class="card-title mb-5">You can select content and edit inline</h4>
+                                    <h3>Title Heading will be
+                                        <b>apear here</b>
+                                    </h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elitconsectetur adipisicing elit,
+                                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                        veniam, quis nostrud Exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                    <ul class="list-icons">
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Lorem ipsum dolor sit amet</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Consectetur adipiscing elit</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Integer molestie lorem at massa </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="click2edit mb-5">Click on Edite button and change the text then save it.</div>
+                                <button id="edit" class="btn btn-info btn-rounded" onclick="edit()" type="button">Edit</button>
+                                <button id="save" class="btn btn-success btn-rounded" onclick="save()" type="button">Save</button>
+                            </div>
+                        </div> -->
                     </div>
                 </div>
-                <!-- Row -->
                 <!-- ============================================================== -->
                 <!-- End PAge Content -->
                 <!-- ============================================================== -->
@@ -103,7 +134,46 @@
 	</div>
 	<!-- End of Main wrapper -->
 	
-	
+	<script th:inline="javascript">
+    $(function () {
+        $('.summernote').summernote({
+            height: 350, // set editor height
+            minHeight: null, // set minimum height of editor
+            maxHeight: null, // set maximum height of editor
+            focus: false // set focus to editable area after initializing summernote
+        });
+        $('.inline-editor').summernote({
+            airMode: true
+        });
+        $('.summernote').summernote('code',[[${b}?${b.content}:'']]);
+    });
+    window.edit = function () {
+        $(".click2edit").summernote()
+    },
+    window.save = function () {
+        $(".click2edit").summernote('destroy');
+    }
+	</script>
+	[[${b eq null}]]
+	[[${b ne null}]]
+	<form id='f1' th:with="b=${b}">
+		<input type="hidden" name="b_no" th:value="${b}?${b.b_no}:''">
+		<input name="title" value=""><br>
+		<input name="content" value=""><br>
+		<input type="hidden" name="writer" th:value="${#authentication.principal} eq 'anonymousUser'?'anonymousUser':${#authentication.principal.member.email}">
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+	</form>
+	<script th:inline="javascript">
+	function abc(){
+		var str = $('.summernote').summernote('code');
+		var formObj = $("#f1");
+		formObj.attr("action","write");
+		formObj.attr("method", "post");
+		formObj.children("input[name=title]").val($('#title').val())
+		formObj.children("input[name=content]").val(str)
+		formObj.submit();
+    }
+	</script>
 	
 	<div th:insert="~{fragments/header::header}"></div>
 	<a href="/board/list">게시판</a>
