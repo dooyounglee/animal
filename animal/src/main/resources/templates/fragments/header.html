@@ -140,8 +140,7 @@
 			<!-- ============================================================== -->
 			<!-- Messages -->
 			<!-- ============================================================== -->
-			<c:if test="${ !empty mem}">
-			<li class="nav-item dropdown"><a
+			<!-- <li class="nav-item dropdown"><a
 				class="nav-link dropdown-toggle text-muted waves-effect waves-dark"
 				href="" id="2" data-toggle="dropdown" aria-haspopup="true"
 				aria-expanded="false"> <i class="mdi mdi-email"></i>
@@ -163,8 +162,7 @@
 								<i class="fa fa-angle-right"></i>
 						</a></li>
 					</ul>
-				</div></li>
-			</c:if>
+				</div></li> -->
 			<!-- ============================================================== -->
 			<!-- End Messages -->
 			<!-- ============================================================== -->
@@ -175,11 +173,7 @@
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle text-muted waves-effect waves-dark"
 					th:if="${#authentication.principal} eq 'anonymousUser'" href="/member/login">login</a>
-
-				[[${#authentication.principal} eq 'anonymousUser'?'로그인해주세요.':${#authentication.principal.member.email}+'님 안녕하세요']]
-				<a th:if="${#authentication.principal} eq 'anonymousUser'" href="/member/login">login</a>
-				
-				
+				[[${#authentication.principal} eq 'anonymousUser'?'':${#authentication.principal.member.email}+'님 안녕하세요']]
 				<th:block th:if="${#authentication.principal} ne 'anonymousUser'" th:with="mem=${#authentication.principal.member}">
 					<a
 						class="nav-link dropdown-toggle text-muted waves-effect waves-dark"
