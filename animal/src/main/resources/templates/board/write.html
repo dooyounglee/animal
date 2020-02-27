@@ -154,12 +154,10 @@
         $(".click2edit").summernote('destroy');
     }
 	</script>
-	[[${b eq null}]]
-	[[${b ne null}]]
 	<form id='f1' th:with="b=${b}">
 		<input type="hidden" name="b_no" th:value="${b}?${b.b_no}:''">
-		<input name="title" value=""><br>
-		<input name="content" value=""><br>
+		<input type="hidden" name="title" value=""><br>
+		<input type="hidden" name="content" value=""><br>
 		<input type="hidden" name="writer" th:value="${#authentication.principal} eq 'anonymousUser'?'anonymousUser':${#authentication.principal.member.email}">
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 	</form>

@@ -3,12 +3,16 @@ package com.doo.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.doo.persistence.BoardRepository;
 import com.doo.persistence.ReplyRepository;
@@ -38,6 +42,8 @@ public class BoardController {
 	
 	@PostMapping("/write")
 	public String writePost(Board b) {
+        b.setIpAddress(getIpAddress());
+        
 		br.save(b);
 		return "redirect:/board/list";
 	}
@@ -64,5 +70,13 @@ public class BoardController {
 	public Board getBoard(Long b_no) {
 		br.findById(b_no).ifPresent(board-> b=board);
 		return b;
+	}
+	
+	public String getIpAddress() {
+		HttpServletRequest req = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
+        String ip = req.getHeader("X-FORWARDED-FOR");
+        if (ip == null)
+            ip = req.getRemoteAddr();
+        return ip;
 	}
 }

@@ -37,6 +37,8 @@ public class Board {
 	private String title;
 	private String writer;
 	private String content;
+	
+	private String ipAddress;
 
 	@Column(updatable=false)
 	@CreationTimestamp

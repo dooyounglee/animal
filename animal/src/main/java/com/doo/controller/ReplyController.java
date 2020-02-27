@@ -3,11 +3,15 @@ package com.doo.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.doo.persistence.AnimalNicknameRepository;
 import com.doo.persistence.AnimalRepository;
@@ -40,6 +44,7 @@ public class ReplyController {
 		Board b=new Board();
 		b.setB_no(b_no);
 		r.setBoard(b);
+		r.setIpAddress(getIpAddress());
 		
 		//동물이름 가져오기
 		//로그인 상태니?
@@ -70,8 +75,15 @@ public class ReplyController {
 		} else {
 			r.setAnimal("김익명");
 		}
-		System.out.println("리플 결과는?"+r);
 		rr.save(r);
 		return "redirect:/board/get?b_no="+b_no;
+	}
+	
+	public String getIpAddress() {
+		HttpServletRequest req = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
+        String ip = req.getHeader("X-FORWARDED-FOR");
+        if (ip == null)
+            ip = req.getRemoteAddr();
+        return ip;
 	}
 }

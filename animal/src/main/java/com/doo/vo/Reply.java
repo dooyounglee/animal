@@ -36,6 +36,8 @@ public class Reply {
 	private String replyer;
 	private String animal;
 	
+	private String ipAddress;
+	
 	@CreationTimestamp
 	private Timestamp regdate;
 	@UpdateTimestamp

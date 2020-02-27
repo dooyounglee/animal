@@ -77,9 +77,14 @@
 	                        <div class="card-body">
 	                        	<a class="btn btn-primary" href="/board/list">list</a>
 								<a class="btn btn-primary" href="/board/write">write</a>
-								<a class="btn btn-warning" th:attr="href='/board/edit?b_no='+${b.b_no}">edit</a>
-								<button id="del" class="btn btn-danger">del</button>
+								
+								<a class="btn btn-warning"
+								   th:if="${#authentication.principal ne 'anonymousUser' and #authentication.principal.member.email eq b.writer}"
+								   th:attr="href='/board/edit?b_no='+${b.b_no}">edit</a>
+								<button id="del" class="btn btn-danger"
+								   th:if="${#authentication.principal ne 'anonymousUser' and #authentication.principal.member.email eq b.writer}">del</button>
 	                            <h4 class="font-medium mt-4">[[${b.title}]]</h4>
+	                            <h6>[[${#strings.contains(b.ipAddress,':')?'localhost':#strings.arraySplit(b.ipAddress, '.')[0]+'.'+#strings.arraySplit(b.ipAddress, '.')[1]+'.***.***'}]]</h6>
 	                            <hr>
 	                            <th:block th:utext='${b.content}'></th:block>
 	                            <hr>
@@ -100,7 +105,7 @@
                                 </form>
 	                            <th:block th:each="r:${rlist}">
 	                            <div class="row">
-		                            <h5 class="col-lg-2 col-mt-4">[[${r.animal}]]</h5>
+		                            <h5 class="col-lg-2 col-mt-4">[[${r.animal}]]<font style="font-size:0.7em;">([[${r.ipAddress}]])</font></h5>
 		                            <h6 class="col-lg-8 col-mt-4">[[${r.replyText}]]</h6>
 		                            <h6 class="col-lg-2 col-mt-4">[[${r.updatedate}]]</h6>
 	                            </div>
