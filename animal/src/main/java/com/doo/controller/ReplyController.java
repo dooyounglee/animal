@@ -6,10 +6,15 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -41,12 +46,47 @@ public class ReplyController {
 	
 	@PostMapping("/write")
 	public String writePost(Reply r, Long b_no) {
+		System.out.println(r);
 		Board b=new Board();
 		b.setB_no(b_no);
 		r.setBoard(b);
 		r.setIpAddress(getIpAddress());
 		
 		//동물이름 가져오기
+		r=getAnimal(r,b_no);
+		
+		//댓글이면 auto_increment값 //아니면 대댓글이니까 놔둬
+		if(r.getRref()==0) {
+			r.setRref(rr.count()+1);
+		}
+		rr.save(r);
+		return "redirect:/board/get?b_no="+b_no;
+	}
+	
+	@ResponseBody
+	@Transactional
+	@PostMapping("/replyAdd")
+	public ResponseEntity<Void> replyAdd(@RequestBody Reply r) {
+		Board b=new Board();
+		b.setB_no(r.getB_no());
+		r.setBoard(b);
+		r.setIpAddress(getIpAddress());
+		r.setReYN("Y");
+		
+		//동물이름 가져오기
+		r=getAnimal(r,r.getB_no());
+		
+		//댓글이면 auto_increment값 //아니면 대댓글이니까 놔둬
+		if(r.getRref()==0) {
+			r.setRref(rr.count()+1);
+		}
+		rr.save(r);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	
+	
+	public Reply getAnimal(Reply r,Long b_no) {
 		//로그인 상태니?
 		Object temp=SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(!temp.equals("anonymousUser")) {//로그인 상태면
@@ -75,8 +115,7 @@ public class ReplyController {
 		} else {
 			r.setAnimal("김익명");
 		}
-		rr.save(r);
-		return "redirect:/board/get?b_no="+b_no;
+		return r;
 	}
 	
 	public String getIpAddress() {

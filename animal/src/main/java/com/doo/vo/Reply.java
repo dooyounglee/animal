@@ -2,6 +2,8 @@ package com.doo.vo;
 
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -9,7 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -24,19 +28,25 @@ import lombok.ToString;
 @Setter
 @Entity
 @Table(name = "reply")
-@EqualsAndHashCode(of = "r_no")
+@EqualsAndHashCode(of = "rno")
 @ToString(exclude="board")
 public class Reply {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long r_no;
+	@Column(name="r_no")
+	private Long rno;
 	
 	private String replyText;
 	private String replyer;
 	private String animal;
 	
+	private Long rref;
+	@Column(name="re_yn")
+	private String reYN="N";
 	private String ipAddress;
+	@Column(name="del_yn")
+	private String delYN="N";
 	
 	@CreationTimestamp
 	private Timestamp regdate;
@@ -46,4 +56,8 @@ public class Reply {
 	@JsonIgnore
 	@ManyToOne(fetch=FetchType.LAZY)
 	private Board board;
+	
+	
+	@Transient
+	private Long b_no;
 }
