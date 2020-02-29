@@ -3,10 +3,10 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <th:block th:insert="~{fragments/head::head}"></th:block>
 <style>
-#replyArea div.row.reply{
-	background-color:#bb00ff29;
-	border-radius:0.25rem;
-}
+/* #replyArea div.row:not(.reply) h6{
+	background-color:#f600ff08;
+	border-radius:0.1rem;
+} */
 #replyArea h5,h6{
 	margin-top:2px;
 	margin-bottom:2px;
@@ -116,11 +116,19 @@
                                 </form>
                                 <div id="replyArea">
 		                            <th:block th:each="r:${rlist}">
-		                            <div th:class="' '+(${r.reYN} eq 'N'?'row reply':'row')" th:data-rno='${r.rno}' data-reform='n'>
-			                            <h5 class="col-lg-2 col-mt-4"><i th:if="${r.reYN} eq 'Y'" class="mdi mdi-subdirectory-arrow-right"></i>[[${r.animal}]]<font style="font-size:0.7em;"> ([[${#strings.contains(r.ipAddress,':')?'localhost':#strings.arraySplit(r.ipAddress, '.')[0]+'.'+#strings.arraySplit(r.ipAddress, '.')[1]}]])</font></h5>
-			                            <h6 class="col-lg-8 col-mt-4"><i th:if="${r.reYN} eq 'Y'" class="mdi mdi-subdirectory-arrow-right"></i>[[${r.replyText}]]</h6>
-			                            <h6 class="col-lg-2 col-mt-4">[[${r.updatedate}]]</h6>
+		                            <div th:class="'row'+(${r.reYN} eq 'N'?' reply':'')" th:data-rno='${r.rno}' data-reform='n'>
+		                            	<div th:class="'col-12 '+(${r.reYN} eq 'Y'?'pl-5':'')">
+				                            <h5 th:class="${r.reYN} eq 'N'?'':'pl-4'">
+				                            	[[${r.animal}]]
+				                            	<!-- <font style="font-size:0.7em;"> -->
+				                            		([[${#strings.contains(r.ipAddress,':')?'localhost':#strings.arraySplit(r.ipAddress, '.')[0]+'.'+#strings.arraySplit(r.ipAddress, '.')[1]}]])
+				                            	<!-- </font> -->
+				                            	&nbsp[[${#strings.substring(r.updatedate,0,10) eq today?#strings.substring(r.updatedate,11):r.updatedate}]]
+				                            </h5>
+				                            <h3 class="pl-0"><i th:if="${r.reYN} eq 'Y'" class="mdi mdi-subdirectory-arrow-right"></i>[[${r.replyText}]]</h3>
+			                            </div>
 		                            </div>
+		                            <hr>
 									</th:block>
 	                            </div>
 	                        </div>
@@ -167,22 +175,24 @@
     $(document).on("click",".reply",function(){
     	$('#rereplyForm').remove();
     	var re_yn=$(this).data('reform');
+    	$('.reply').data('reform','n')
     	if(re_yn=='n'){
 	    	$(this).data('reform','y')
 	    	var str='<div class="row" id="rereplyForm">' 
 	    	str+='<div class="form-group col-md-2 mt-3">'
-	    	str+='<input type="text" id="replyer" class="form-control form-control-line">'
-	    	str+='</div>'
-	    	str+='<div class="form-group col-md-8 mt-3">'
+	    	str+='<input type="text" id="replyer" class="form-control form-control-line" value="'
+	    	str+=[[${#authentication.principal} eq 'anonymousUser'?'anonymousUser':${#authentication.principal.member.email}]]
+	    	str+='" readonly></div>'
+	    	str+='<div class="form-group col-md-9 mt-3">'
 	    	str+='<input type="text" id="replyText" class="form-control" placeholder="내용을 입력하세요">'
 	    	str+='</div>'
-	    	str+='<div class="form-group col-md-2 mt-3">'
+	    	str+='<div class="form-group col-md-1 mt-3">'
 	    	str+='<button class="btn btn-success" id="rere">write</button>'
 	    	str+='</div>'
 	    	str+='</div>'
 	    	$(this).after(str)
     	}else if(re_yn=='y'){
-    		$(this).data('reform','n')
+    		
     	}
 	});
     </script>

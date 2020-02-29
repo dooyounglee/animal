@@ -56,6 +56,9 @@
 
 
 <th:block th:fragment="preloader">
+<form th:action="@{~/member/login}">
+	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+</form>
 <div class="preloader">
     <svg class="circular" viewBox="25 25 50 50">
         <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />

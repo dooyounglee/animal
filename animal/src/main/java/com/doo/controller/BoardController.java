@@ -1,6 +1,8 @@
 package com.doo.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,11 +30,14 @@ public class BoardController {
 	@Autowired
 	private ReplyRepository rr;
 	
+	private SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+	
 	@GetMapping("/list")
 	public void list(Model model) {
 		List<Board> list=new ArrayList<Board>();
-		br.findAll().forEach(b->list.add(b));
+		br.findBoardByDelYN("N").forEach(b->list.add(b));
 		model.addAttribute("list", list);
+		model.addAttribute("today",sdf.format(new Date()));
 	}
 	
 	@GetMapping("/write")
@@ -52,6 +57,7 @@ public class BoardController {
 	public void get(Board b,Model model) {
 		model.addAttribute("b", getBoard(b.getB_no()));
 		model.addAttribute("rlist", rr.getReplyOfBoard(b));
+		model.addAttribute("today",sdf.format(new Date()));
 	}
 	
 	@GetMapping("/edit")

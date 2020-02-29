@@ -39,6 +39,8 @@ public class Board {
 	private String content;
 	
 	private String ipAddress;
+	@Column(name="del_yn")
+	private String delYN="N";
 
 	@Column(updatable=false)
 	@CreationTimestamp

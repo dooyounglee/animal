@@ -29,8 +29,6 @@ import com.doo.vo.Board;
 import com.doo.vo.Member;
 import com.doo.vo.Reply;
 
-import lombok.extern.java.Log;
-
 @Controller
 @RequestMapping("/reply")
 public class ReplyController {
@@ -56,8 +54,11 @@ public class ReplyController {
 		r=getAnimal(r,b_no);
 		
 		//댓글이면 auto_increment값 //아니면 대댓글이니까 놔둬
-		if(r.getRref()==0) {
-			r.setRref(rr.count()+1);
+		System.out.println();
+		if(r.getRref()==null) {
+			//reply테이블 안지운다는 조건하에, 마지막rno값+1로 채움.
+			//정확히는, insert하고 나온 rno값으로 다시 update해야 할듯
+			r.setRref(rr.findTop1ByOrderByRnoDesc().getRno()+1);
 		}
 		rr.save(r);
 		return "redirect:/board/get?b_no="+b_no;
