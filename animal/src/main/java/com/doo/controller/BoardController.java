@@ -1,20 +1,28 @@
 package com.doo.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.doo.persistence.BoardRepository;
 import com.doo.persistence.ReplyRepository;
@@ -74,6 +82,27 @@ public class BoardController {
 	public String delPost(Board b) {
 		br.deleteById(b.getB_no());
 		return "redirect:/board/list";
+	}
+	
+	@ResponseBody
+	@PostMapping("/upload")
+	public ResponseEntity<Void> upload(MultipartHttpServletRequest req,HttpServletResponse res) {
+		System.out.println("들어왔고");
+		MultipartFile file=req.getFile("uploadFile");
+		String savePath=req.getSession().getServletContext().getRealPath("resources");
+		//String savePath=req.getSession().getServletContext().getRealPath("resources/static");
+		//		.replace("\\webapp\\","\\");//D:\git\animal\animal\src\main\resources\static
+		String filePath=savePath+"\\upload\\"+file.getOriginalFilename();
+		System.out.println(filePath);
+		try {
+			file.transferTo(new File(filePath));
+			res.getWriter().println(file.getOriginalFilename());
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	Board b=null;
