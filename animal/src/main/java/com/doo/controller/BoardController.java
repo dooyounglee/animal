@@ -35,7 +35,11 @@ public class BoardController {
 	@GetMapping("/list")
 	public void list(Model model) {
 		List<Board> list=new ArrayList<Board>();
-		br.findBoardByDelYN("N").forEach(b->list.add(b));
+		br.findBoardByDelYNWithReplyCountNative().forEach(b->{
+			Board bo=((Board)(b[0]));
+			bo.setRcount(((Long)(b[1])));
+			list.add(bo);
+		});
 		model.addAttribute("list", list);
 		model.addAttribute("today",sdf.format(new Date()));
 	}

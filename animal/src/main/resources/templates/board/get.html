@@ -7,10 +7,11 @@
 	background-color:#f600ff08;
 	border-radius:0.1rem;
 } */
-#replyArea h5,h6{
-	margin-top:2px;
-	margin-bottom:2px;
-	
+#replyArea h5, #replyArea h3{
+	margin:0px;
+}
+hr{
+	margin:10px;
 }
 </style>
 <body class="fix-header card-no-border logo-center">
@@ -95,14 +96,18 @@
 								<button id="del" class="btn btn-danger"
 								   th:if="${#authentication.principal ne 'anonymousUser' and #authentication.principal.member.email eq b.writer}">del</button>
 	                            <h4 class="font-medium mt-4">[[${b.title}]]</h4>
-	                            <h6>[[${#strings.contains(b.ipAddress,':')?'localhost':#strings.arraySplit(b.ipAddress, '.')[0]+'.'+#strings.arraySplit(b.ipAddress, '.')[1]}]]</h6>
+	                            <h6>
+	                            	[[${#strings.contains(b.ipAddress,':')?'localhost':#strings.arraySplit(b.ipAddress, '.')[0]+'.'+#strings.arraySplit(b.ipAddress, '.')[1]}]]
+	                            	&nbsp | &nbsp
+	                            	[[${#dates.format(b.regdate,'yyyy-MM-dd HH:mm:ss')}]]
+	                            </h6>
 	                            <hr>
 	                            <th:block th:utext='${b.content}'></th:block>
 	                            <hr>
 	                            <form class="form-material mt-4 row" action="/reply/write" method="post">
                                     <div class="form-group col-md-2 mt-3">
                                         <input type="text" name="replyer" class="form-control form-control-line"
-                                        	th:value="${#authentication.principal} eq 'anonymousUser'?'anonymousUser':${#authentication.principal.member.email}"
+                                        	th:value="${#authentication.principal} eq 'anonymousUser'?'ㅇㅇ':${#authentication.principal.member.email}"
                                         	th:readonly="${#authentication.principal} eq 'anonymousUser'?'':'true'">
                                     </div>
                                     <div class="form-group col-md-9 mt-3">
@@ -118,14 +123,15 @@
 		                            <th:block th:each="r:${rlist}">
 		                            <div th:class="'row'+(${r.reYN} eq 'N'?' reply':'')" th:data-rno='${r.rno}' data-reform='n'>
 		                            	<div th:class="'col-12 '+(${r.reYN} eq 'Y'?'pl-5':'')">
-				                            <h5 th:class="${r.reYN} eq 'N'?'':'pl-4'">
+				                            <h6 th:class="${r.reYN} eq 'N'?'':'pl-2'">
+				                            	<i th:if="${r.reYN} eq 'Y'" class="mdi mdi-subdirectory-arrow-right"></i>
 				                            	[[${r.animal}]]
 				                            	<!-- <font style="font-size:0.7em;"> -->
 				                            		([[${#strings.contains(r.ipAddress,':')?'localhost':#strings.arraySplit(r.ipAddress, '.')[0]+'.'+#strings.arraySplit(r.ipAddress, '.')[1]}]])
 				                            	<!-- </font> -->
-				                            	&nbsp[[${#strings.substring(r.updatedate,0,10) eq today?#strings.substring(r.updatedate,11):r.updatedate}]]
-				                            </h5>
-				                            <h3 class="pl-0"><i th:if="${r.reYN} eq 'Y'" class="mdi mdi-subdirectory-arrow-right"></i>[[${r.replyText}]]</h3>
+				                            	&nbsp[[${#strings.substring(r.updatedate,0,10) eq today?#dates.format(r.updatedate,'HH:mm'):#dates.format(r.updatedate,'yyyy-MM-dd')}]]
+				                            </h6>
+				                            <h3 th:class="${r.reYN} eq 'N'?'':'pl-2'">[[${r.replyText}]]</h3>
 			                            </div>
 		                            </div>
 		                            <hr>
@@ -181,7 +187,7 @@
 	    	var str='<div class="row" id="rereplyForm">' 
 	    	str+='<div class="form-group col-md-2 mt-3">'
 	    	str+='<input type="text" id="replyer" class="form-control form-control-line" value="'
-	    	str+=[[${#authentication.principal} eq 'anonymousUser'?'anonymousUser':${#authentication.principal.member.email}]]
+	    	str+=[[${#authentication.principal} eq 'anonymousUser'?'ㅇㅇ':${#authentication.principal.member.email}]]
 	    	str+='" readonly></div>'
 	    	str+='<div class="form-group col-md-9 mt-3">'
 	    	str+='<input type="text" id="replyText" class="form-control" placeholder="내용을 입력하세요">'

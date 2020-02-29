@@ -81,28 +81,34 @@
                                     <table id="zero_config" class="table hover-table">
                                         <thead>
                                             <tr>
-                                                <th>#</th>
+                                            	<th>#</th>
                                                 <th>title</th>
-                                                <th>writer</th>
-                                                <th>regdate</th>
-                                                <th>updatedate</th>
                                             </tr>
                                         </thead>
                                         <tbody>
 											<th:block th:each="b:${list}">
                                         		<tr>
-	                                        		<td>[[${b.b_no }]]</td>
-	                                        		<td><a th:attr="href='/board/get?b_no='+${b.b_no}">[[${b.title}]]</a></td>
-	                                                <td>[[${b.writer }]]</a></td>
-	                                                <td>[[${b.regdate }]]</td>
-	                                                <td>[[${b.updatedate }]]</td>
+                                        			<td>[[${b.b_no}]]</td>
+	                                        		<td>
+	                                        			<a th:attr="href='/board/get?b_no='+${b.b_no}">[[${b.title}]] &#91;[[${b.rcount}]]&#93;</a><br>
+	                                        			<h6>
+	                                        				[[${b.writer }]]
+	                                        				([[${#strings.contains(b.ipAddress,':')?'localhost':#strings.arraySplit(b.ipAddress, '.')[0]+'.'+#strings.arraySplit(b.ipAddress, '.')[1]}]]) &nbsp;|&nbsp;
+	                                        				[[${#strings.substring(b.regdate,0,10) eq today?#dates.format(b.regdate,'HH:mm'):#dates.format(b.regdate,'yyyy-MM-dd')}]] &nbsp;|&nbsp;
+	                                        				
+	                                        			</h6>
+	                                        		</td>
 												</tr>
 											</th:block>
                                         </tbody>
                                     </table>
                                     <script>
 								   		$('#zero_config').DataTable({
-								   			"order": [ [ 0, "desc" ] ]
+								   			"order": [ [ 0, "desc" ] ],
+								   			"info":     false,
+								   			"columnDefs": [
+								   			    { "width": "15px", "targets": 0 }
+								   			  ]
 								   		});
 								    </script>
                                 </div>
