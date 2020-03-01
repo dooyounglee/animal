@@ -133,13 +133,11 @@ public class BoardController {
 	@ResponseBody
 	@PostMapping("/upload")
 	public ResponseEntity<Void> upload(MultipartHttpServletRequest req,HttpServletResponse res) {
-		System.out.println("들어왔고");
 		MultipartFile file=req.getFile("uploadFile");
 		String savePath=req.getSession().getServletContext().getRealPath("resources");
 		//String savePath=req.getSession().getServletContext().getRealPath("resources/static");
 		//		.replace("\\webapp\\","\\");//D:\git\animal\animal\src\main\resources\static
 		String filePath=savePath+"\\upload\\"+file.getOriginalFilename();
-		System.out.println(filePath);
 		try {
 			file.transferTo(new File(filePath));
 			res.getWriter().println(file.getOriginalFilename());
