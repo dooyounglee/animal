@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -34,12 +35,6 @@ import lombok.ToString;
 @NoArgsConstructor
 public class Board {
 
-	public Board(Board b, Long rcount) {
-		super();
-		b.setRcount(rcount);
-	}
-
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long b_no;
@@ -47,9 +42,11 @@ public class Board {
 	private String writer;
 	private String content;
 	
+	private String pw;
 	private String ipAddress;
 	@Column(name="del_yn")
 	private String delYN="N";
+	private Long viewCount=0L;
 
 	@Column(updatable=false)
 	@CreationTimestamp
@@ -64,6 +61,10 @@ public class Board {
 	
 	@Transient
 	private Long rcount;
+	@Transient
+	private String nickname;
+	@Transient
+	private String signYN;
 	
 	
 }

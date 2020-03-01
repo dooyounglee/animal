@@ -92,10 +92,14 @@
 	                                        		<td>
 	                                        			<a th:attr="href='/board/get?b_no='+${b.b_no}">[[${b.title}]] &#91;[[${b.rcount}]]&#93;</a><br>
 	                                        			<h6>
-	                                        				[[${b.writer }]]
-	                                        				([[${#strings.contains(b.ipAddress,':')?'localhost':#strings.arraySplit(b.ipAddress, '.')[0]+'.'+#strings.arraySplit(b.ipAddress, '.')[1]}]]) &nbsp;|&nbsp;
-	                                        				[[${#strings.substring(b.regdate,0,10) eq today?#dates.format(b.regdate,'HH:mm'):#dates.format(b.regdate,'yyyy-MM-dd')}]] &nbsp;|&nbsp;
-	                                        				
+	                                        				[[${b.nickname }]] <i class="mdi mdi-account-circle" th:if="${b.signYN eq 'Y'}"></i>
+	                                        				<th:block th:if="${b.signYN eq 'N'}">
+	                                        					([[${#strings.contains(b.ipAddress,':')?'localhost':#strings.arraySplit(b.ipAddress, '.')[0]+'.'+#strings.arraySplit(b.ipAddress, '.')[1]}]])
+	                                        				</th:block>
+	                                        				&nbsp;|&nbsp;
+	                                        				[[${#strings.substring(b.regdate,0,10) eq today?#dates.format(b.regdate,'HH:mm'):#dates.format(b.regdate,'yyyy-MM-dd')}]]
+	                                        				&nbsp;|&nbsp;
+	                                        				조회수 [[${b.viewCount}]]
 	                                        			</h6>
 	                                        		</td>
 												</tr>

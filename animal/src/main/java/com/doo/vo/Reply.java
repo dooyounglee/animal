@@ -41,6 +41,7 @@ public class Reply {
 	private String replyer;
 	private String animal;
 	
+	private String pw;
 	private Long rref;
 	@Column(name="re_yn")
 	private String reYN="N";
@@ -60,4 +61,8 @@ public class Reply {
 	
 	@Transient
 	private Long b_no;
+	@Transient
+	private String nickname;
+	@Transient
+	private String signYN;
 }

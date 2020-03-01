@@ -11,7 +11,10 @@
 	margin:0px;
 }
 hr{
-	margin:10px;
+	margin-top:10px;
+	margin-bottom:10px;
+	margin-left:0px;
+	margin-right:0px;
 }
 </style>
 <body class="fix-header card-no-border logo-center">
@@ -89,31 +92,39 @@ hr{
 	                        <div class="card-body">
 	                        	<a class="btn btn-primary" href="/board/list">list</a>
 								<a class="btn btn-primary" href="/board/write">write</a>
-								
-								<a class="btn btn-warning"
-								   th:if="${#authentication.principal ne 'anonymousUser' and #authentication.principal.member.email eq b.writer}"
-								   th:attr="href='/board/edit?b_no='+${b.b_no}">edit</a>
-								<button id="del" class="btn btn-danger"
-								   th:if="${#authentication.principal ne 'anonymousUser' and #authentication.principal.member.email eq b.writer}">del</button>
-	                            <h4 class="font-medium mt-4">[[${b.title}]]</h4>
+								<button id="edit" class="btn btn-warning">edit</button>
+								<button id="del"  class="btn btn-danger">del</button>
+								<input type="text" id="pw" class="form-control col-md-3" placeholder="비번을 입력하세요"
+									th:if="${#authentication.principal eq 'anonymousUser'}">
+	                            <h2 class="font-medium mt-4">[[${b.title}]]</h2>
 	                            <h6>
-	                            	[[${#strings.contains(b.ipAddress,':')?'localhost':#strings.arraySplit(b.ipAddress, '.')[0]+'.'+#strings.arraySplit(b.ipAddress, '.')[1]}]]
-	                            	&nbsp | &nbsp
+	                            	[[${b.nickname }]] <i class="mdi mdi-account-circle" th:if="${b.pw eq null}"></i>
+                      				<th:block th:if="${b.signYN eq 'N'}">
+                      					([[${#strings.contains(b.ipAddress,':')?'localhost':#strings.arraySplit(b.ipAddress, '.')[0]+'.'+#strings.arraySplit(b.ipAddress, '.')[1]}]])
+                      				</th:block>
+	                                &nbsp | &nbsp
 	                            	[[${#dates.format(b.regdate,'yyyy-MM-dd HH:mm:ss')}]]
+	                            	&nbsp | &nbsp
+	                            	조회수 [[${b.viewCount}]]
 	                            </h6>
 	                            <hr>
 	                            <th:block th:utext='${b.content}'></th:block>
 	                            <hr>
-	                            <form class="form-material mt-4 row" action="/reply/write" method="post">
-                                    <div class="form-group col-md-2 mt-3">
+	                            <form class="form-material row" action="/reply/write" method="post">
+                                    <div th:class="'form-group '+(${#authentication.principal} eq 'anonymousUser'?'col-md-1':'col-md-2')+' mb-0 pr-0'">
                                         <input type="text" name="replyer" class="form-control form-control-line"
-                                        	th:value="${#authentication.principal} eq 'anonymousUser'?'ㅇㅇ':${#authentication.principal.member.email}"
-                                        	th:readonly="${#authentication.principal} eq 'anonymousUser'?'':'true'">
+                                        	th:value="${#authentication.principal} eq 'anonymousUser'?'':${#authentication.principal.member.email}"
+                                        	th:readonly="${#authentication.principal} eq 'anonymousUser'?'false':'true'"
+                                        	placeholder="닉네임">
                                     </div>
-                                    <div class="form-group col-md-9 mt-3">
+                                    <div class="form-group col-md-1 mb-0 pl-1 pr-0" th:if="${#authentication.principal eq 'anonymousUser'}">
+                                        <input type="text" name="pw" class="form-control form-control-line"
+                                        	placeholder="비번">
+                                    </div>
+                                    <div class="form-group col-md-9 mb-0">
                                         <input type="text" name="replyText" class="form-control" placeholder="내용을 입력하세요">
                                     </div>
-									<div class="form-group col-md-1 mt-3">
+									<div class="form-group col-md-1 mb-0">
 										<button class="btn btn-success">write</button>
 									</div>
                                     <input type=hidden name="b_no" th:value="${b.b_no}" readonly>
@@ -122,16 +133,24 @@ hr{
                                 <div id="replyArea">
 		                            <th:block th:each="r:${rlist}">
 		                            <div th:class="'row'+(${r.reYN} eq 'N'?' reply':'')" th:data-rno='${r.rno}' data-reform='n'>
-		                            	<div th:class="'col-12 '+(${r.reYN} eq 'Y'?'pl-5':'')">
+		                            	<div th:class="'col-11 '+(${r.reYN} eq 'Y'?'pl-5':'')">
 				                            <h6 th:class="${r.reYN} eq 'N'?'':'pl-2'">
 				                            	<i th:if="${r.reYN} eq 'Y'" class="mdi mdi-subdirectory-arrow-right"></i>
-				                            	[[${r.animal}]]
-				                            	<!-- <font style="font-size:0.7em;"> -->
+				                            	<!-- nickanme=null이면 animal -->
+				                            	<!-- !=null이면 nick(animal) -->
+				                            	<th:block th:if="${r.signYN eq 'N'}">
+				                            		[[${r.nickname}]]
 				                            		([[${#strings.contains(r.ipAddress,':')?'localhost':#strings.arraySplit(r.ipAddress, '.')[0]+'.'+#strings.arraySplit(r.ipAddress, '.')[1]}]])
-				                            	<!-- </font> -->
+				                            	</th:block>
+				                            	<th:block th:if="${r.signYN eq 'Y'}">
+				                            		[[${r.nickname }]] <i class="mdi mdi-account-circle"></i>
+				                            	</th:block>
 				                            	&nbsp[[${#strings.substring(r.updatedate,0,10) eq today?#dates.format(r.updatedate,'HH:mm'):#dates.format(r.updatedate,'yyyy-MM-dd')}]]
 				                            </h6>
 				                            <h3 th:class="${r.reYN} eq 'N'?'':'pl-2'">[[${r.replyText}]]</h3>
+			                            </div>
+			                            <div class="col-1">
+				                            <button class="btn redel"><i class="mdi mdi-close"></i></button>
 			                            </div>
 		                            </div>
 		                            <hr>
@@ -165,30 +184,91 @@ hr{
 	
 	<form id='f1'>
 		<input type="hidden" name="b_no" th:value="${b.b_no}">
+		<input type="hidden" name="pw">
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 	</form>
     <script th:inline="javascript">
-	var formObj = $("#f1");
+	var formObj1 = $("#f1");
     $("#del").click(function(){
-		formObj.attr("action","/board/del");
-		formObj.attr("method", "post");
-		formObj.submit();
+		$.ajax({
+			type:'post',
+			url:'/board/pw',
+			data:JSON.stringify({
+				b_no:[[${b.b_no}]],
+			}),
+			contentType:"application/json",
+			beforeSend:function(xhr){
+				xhr.setRequestHeader(csrf.headerName,csrf.token)
+			},
+			success:function(data){
+				if($('#pw').val()==data.pw){
+					alert("삭제할께요ㅠ");
+					formObj1.attr("action","/board/del");
+					formObj1.attr("method", "post");
+					formObj1.submit();
+				}else{
+					alert("비번이 달라요ㅠ");
+				}
+			},
+		})
+	});
+    </script>
+    
+    <form id='f2'>
+		<input type="hidden" name="b_no" th:value="${b.b_no}">
+		<input type="hidden" name="pw">
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+	</form>
+    <script th:inline="javascript">
+	var formObj2 = $("#f2");
+	var csrf=JSON.parse('[[${_csrf}]]');
+    $("#edit").click(function(){
+		$.ajax({
+			type:'post',
+			url:'/board/pw',
+			data:JSON.stringify({
+				b_no:[[${b.b_no}]],
+			}),
+			//dataType:'json',
+			contentType:"application/json",
+			beforeSend:function(xhr){
+				xhr.setRequestHeader(csrf.headerName,csrf.token)
+			},
+			success:function(data){
+				if($('#pw').val()==data.pw){
+					alert("수정하러 가실께요~");
+					formObj2.attr("action","/board/edit");
+					formObj2.attr("method", "get");
+					formObj2.submit();
+				}else{
+					alert("비번이 달라요ㅠ");
+				}
+			},
+		})
 	});
     </script>
     
     <script th:inline="javascript">
-	var formObj = $("#f2");
     $(document).on("click",".reply",function(){
     	$('#rereplyForm').remove();
     	var re_yn=$(this).data('reform');
     	$('.reply').data('reform','n')
+    	var mem=[[${#authentication.principal eq 'anonymousUser'?'anonymousUser':#authentication.principal.member.email}]];
     	if(re_yn=='n'){
 	    	$(this).data('reform','y')
 	    	var str='<div class="row" id="rereplyForm">' 
-	    	str+='<div class="form-group col-md-2 mt-3">'
-	    	str+='<input type="text" id="replyer" class="form-control form-control-line" value="'
-	    	str+=[[${#authentication.principal} eq 'anonymousUser'?'ㅇㅇ':${#authentication.principal.member.email}]]
-	    	str+='" readonly></div>'
+	    	if(mem=='anonymousUser'){
+	    		str+='<div class="form-group col-md-1 mt-3">'
+    	    	str+='<input type="text" id="replyer" class="form-control form-control-line" placeholder="닉네임"></div>'
+    	    	str+='<div class="form-group col-md-1 mt-3">'
+    	    	str+='<input type="text" id="repw" class="form-control" placeholder="비번">'
+    	    	str+='</div>'	
+	    	}else{
+	    		str+='<div class="form-group col-md-2 mt-3">'
+    	    	str+='<input type="text" id="replyer" class="form-control form-control-line" value="'
+    	    	str+=mem
+    	    	str+='" readonly></div>'
+	    	}
 	    	str+='<div class="form-group col-md-9 mt-3">'
 	    	str+='<input type="text" id="replyText" class="form-control" placeholder="내용을 입력하세요">'
 	    	str+='</div>'
@@ -216,6 +296,7 @@ hr{
 					replyText:$('#replyText').val(),
 					b_no:[[${b.b_no}]],
 					rref:$(this_).closest('div.row').prev().data('rno'),
+					pw:$('#repw').val(),
 				}),
 				contentType:"application/json",
 				beforeSend:function(xhr){
@@ -224,11 +305,56 @@ hr{
 				success:function(data){
 					$('#replyArea').load("/board/get?b_no=[[${b.b_no}]] #replyArea")
 				},
-				error:function(){
-					alert("에러")
-				}
 			})
 		});
+    </script>
+    
+    <form id='f3'>
+		<input type="hidden" name="rno">
+		<input type="hidden" name="pw">
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+	</form>
+    <script th:inline="javascript">
+    	$('.redel').click(function(e){
+    		var this_=$(this)
+    		e.stopPropagation()
+    		var pw=prompt("비번입력해봐")
+    		if(pw==null)return false;
+    		$.ajax({
+				type:'post',
+				url:'/reply/pw',
+				data:JSON.stringify({
+					rno:this_.closest('div.row').data('rno'),
+				}),
+				contentType:"application/json",
+				beforeSend:function(xhr){
+					xhr.setRequestHeader(csrf.headerName,csrf.token)
+				},
+				success:function(data){
+					console.log(data)
+					if(pw==data.pw){
+						$.ajax({
+							type:'post',
+							url:'/reply/replyDel',
+							data:JSON.stringify({
+								rno:data.rno,
+							}),
+							contentType:"application/json",
+							beforeSend:function(xhr){
+								xhr.setRequestHeader(csrf.headerName,csrf.token)
+							},
+							success:function(data){
+								$('#replyArea').load("/board/get?b_no=[[${b.b_no}]] #replyArea")
+								alert("삭제되었습니다.")
+							}
+						})
+					}else{
+						alert("비번이 달라요ㅠ");
+					}
+					
+				},
+			})
+    	})
     </script>
 </body>
 </html>

@@ -54,7 +54,6 @@ public class ReplyController {
 		r=getAnimal(r,b_no);
 		
 		//댓글이면 auto_increment값 //아니면 대댓글이니까 놔둬
-		System.out.println();
 		if(r.getRref()==null) {
 			//reply테이블 안지운다는 조건하에, 마지막rno값+1로 채움.
 			//정확히는, insert하고 나온 rno값으로 다시 update해야 할듯
@@ -76,16 +75,28 @@ public class ReplyController {
 		
 		//동물이름 가져오기
 		r=getAnimal(r,r.getB_no());
-		
-		//댓글이면 auto_increment값 //아니면 대댓글이니까 놔둬
-		if(r.getRref()==0) {
-			r.setRref(rr.count()+1);
-		}
+
 		rr.save(r);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
+	@PostMapping("/replyDel")
+	public ResponseEntity<Void> replyDel(@RequestBody Reply r) {
+		rr.findById(r.getRno()).ifPresent(e->{
+			e.setDelYN("Y");
+			rr.save(e);
+		});
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 	
+	Reply r=null;
+	@PostMapping("/pw")
+	public ResponseEntity<Reply> getPw(@RequestBody Reply re){
+		rr.findById(re.getRno()).ifPresent(e->{
+			r=e;
+		});
+		return new ResponseEntity<>(r,HttpStatus.OK);
+	}
 	
 	public Reply getAnimal(Reply r,Long b_no) {
 		//로그인 상태니?

@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.doo.persistence.AnimalRepository;
 import com.doo.persistence.BoardRepository;
@@ -16,6 +17,8 @@ import com.doo.persistence.MemberRepository;
 import com.doo.persistence.ReplyRepository;
 import com.doo.vo.Animal;
 import com.doo.vo.Board;
+import com.doo.vo.Member;
+import com.doo.vo.Reply;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,7 +44,7 @@ public class AnimalTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void test1() {
 		List<Board> list=new ArrayList<Board>();
 		br.findBoardByDelYNWithReplyCountNative().forEach( b->{
@@ -50,5 +53,24 @@ public class AnimalTest {
 			list.add(bo);
 		});
 		System.out.println(list);
+	}
+	
+	//@Test
+	public void test2(MultipartHttpServletRequest req) {
+		System.out.println(req.getSession().getServletContext().getRealPath(""));
+	}
+	
+	@Test
+	public void test3() {
+		Board b=new Board();
+		b.setB_no(40L);
+		rr.getReplyOfBoard(b).forEach( e->{
+			Reply r=(Reply)e[0];
+			Member m=(Member)e[1];
+			
+			r.setNickname(m!=null?m.getNickname():r.getReplyer());
+			r.setSignYN(m!=null?"Y":"N");
+			System.out.println(r);
+		});
 	}
 }
