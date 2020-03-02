@@ -79,7 +79,7 @@
                                 </div>
                                 <div class="form-group mt-12 row" th:if="${#authentication.principal} eq 'anonymousUser'">
                                     <div class="col-md-6">
-                                        <input class="form-control" id="nickname" th:value="${b}?${b.pw}:''" placeholder="닉네임">
+                                        <input class="form-control" id="nickname" th:value="${b}?${b.nickname}:''" placeholder="닉네임">
                                     </div>
                                     <div class="col-md-6">
                                         <input class="form-control" id="pw" th:value="${b}?${b.pw}:''" placeholder="비번">
