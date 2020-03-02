@@ -47,6 +47,8 @@ public class Board {
 	@Column(name="del_yn")
 	private String delYN="N";
 	private Long viewCount=0L;
+	@Column(name="pc_yn")
+	private String pcYN;
 
 	@Column(updatable=false)
 	@CreationTimestamp

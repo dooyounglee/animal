@@ -191,8 +191,8 @@
 		<input type="hidden" name="b_no" th:value="${b}?${b.b_no}:''">
 		<input type="hidden" name="title" value=""><br>
 		<input type="hidden" name="content" value=""><br>
-		<input type="hidden" name="writer">
-		<input type="hidden" name="pw">
+		<input type="hidden" name="writer" th:value="${#authentication.principal eq 'anonymousUser'?'anonymousUser':#authentication.principal.member.email}">
+		<input type="hidden" name="pcYN">
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 	</form>
 	<script th:inline="javascript">
@@ -203,8 +203,12 @@
 		formObj.attr("method", "post");
 		formObj.children("input[name=title]").val($('#title').val())
 		formObj.children("input[name=content]").val(str)
-		formObj.children("input[name=writer]").val($('#nickname').val())
-		formObj.children("input[name=pw]").val($('#pw').val())
+		if(formObj.children("input[name=writer]").val()=='anonymousUser'){
+			formObj.children("input[name=writer]").val($('#nickname').val())
+			formObj.append('<input type="hidden" name="pw">')
+			formObj.children("input[name=pw]").val($('#pw').val())
+		}
+		formObj.children("input[name=pcYN]").val(isMobile()?'N':'Y')
 		formObj.submit();
     }
 	</script>

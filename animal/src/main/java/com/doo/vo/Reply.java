@@ -48,6 +48,8 @@ public class Reply {
 	private String ipAddress;
 	@Column(name="del_yn")
 	private String delYN="N";
+	@Column(name="pc_yn")
+	private String pcYN;
 	
 	@CreationTimestamp
 	private Timestamp regdate;

@@ -100,6 +100,8 @@
 	                                        				[[${#strings.substring(b.regdate,0,10) eq today?#dates.format(b.regdate,'HH:mm'):#dates.format(b.regdate,'yyyy-MM-dd')}]]
 	                                        				&nbsp;|&nbsp;
 	                                        				조회수 [[${b.viewCount}]]
+	                                        				&nbsp;|&nbsp;
+	                                        				<i class="mdi mdi-cellphone-iphone" th:if="${b.pcYN eq 'N'}"></i>
 	                                        			</h6>
 	                                        		</td>
 												</tr>

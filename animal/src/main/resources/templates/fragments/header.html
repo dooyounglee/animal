@@ -218,7 +218,22 @@
 	                
 		</ul>
 	</div>
-			
 </nav>
+<div id="scrollbar" style="background-color:yellow;height:2px;">
+    </div>
+    <script>
+    var scrollTop=$(window).scrollTop()
+    var height=$(document).height()
+    var windowHeight=window.innerHeight
+    var width=100*scrollTop/(height-windowHeight)||0
+    $('#scrollbar').width(width+"%")
+    $(window).scroll(function() {
+	    var scrollTop=$(window).scrollTop()
+	    var height=$(document).height()
+	    var windowHeight=window.innerHeight
+	    var width=100*scrollTop/(height-windowHeight)
+	    $('#scrollbar').width(width+"%")
+    })
+    </script>
 </th:block>
 </html>
