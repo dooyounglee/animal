@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.doo.persistence.BoardRepository;
 import com.doo.persistence.ReplyRepository;
 import com.doo.security.SecurityUser;
+import com.doo.vo.Animal;
 import com.doo.vo.Board;
 import com.doo.vo.Member;
 import com.doo.vo.Reply;
@@ -101,9 +102,11 @@ public class BoardController {
 		rr.getReplyOfBoard(b).forEach( e->{
 			Reply r=(Reply)e[0];
 			Member m=(Member)e[1];
+			Animal a=(Animal)e[2];
 			
 			r.setNickname(m!=null?m.getNickname():r.getReplyer());
 			r.setSignYN(m!=null?"Y":"N");
+			r.setAnimal(a!=null?a.getAnimal_name():null);
 			rlist.add(r);
 		});
 		model.addAttribute("rlist", rlist);

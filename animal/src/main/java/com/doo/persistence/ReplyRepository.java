@@ -10,9 +10,10 @@ import com.doo.vo.Reply;
 
 public interface ReplyRepository extends CrudRepository<Reply, Long>{
 
-	@Query( "select r,m" + 
+	@Query( "select r,m,a" + 
 			"   from Reply r" + 
 			" left join Member m on (r.replyer=m.email and r.pw is null)" + 
+			" left join Animal a on (r.animal_no=a.animal_no) " +
 			" where r.delYN='N'" +
 			"   and r.board = ?1" +
 			"   AND r.rno > 0" +

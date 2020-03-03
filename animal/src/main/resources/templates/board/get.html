@@ -7,15 +7,15 @@
 	background-color:#f600ff08;
 	border-radius:0.1rem;
 } */
-#replyArea h5, #replyArea h3{
+/* #replyArea h5, #replyArea h3{
 	margin:0px;
-}
-hr{
+} */
+/* hr{
 	margin-top:10px;
 	margin-bottom:10px;
 	margin-left:0px;
 	margin-right:0px;
-}
+} */
 </style>
 <body class="fix-header card-no-border logo-center">
 	
@@ -152,28 +152,29 @@ hr{
 		                            <th:block th:each="r:${rlist}">
 		                            <div th:class="'row'+(${r.reYN} eq 'N'?' reply':'')" th:data-rno='${r.rno}' data-reform='n'>
 		                            	<div th:class="'col-12 '+(${r.reYN} eq 'Y'?'pl-5':'')">
-				                            <h6 th:class="${r.reYN} eq 'N'?'':'pl-2'">
+				                            <h6 th:class="(${r.reYN} eq 'N'?'':'pl-2')+' mb-0 text-muted'">
 				                            	<i th:if="${r.reYN} eq 'Y'" class="mdi mdi-subdirectory-arrow-right"></i>
 				                            	<th:block th:if="${r.signYN eq 'N'}">
 				                            		[[${r.nickname}]]
 				                            		([[${#strings.contains(r.ipAddress,':')?'localhost':#strings.arraySplit(r.ipAddress, '.')[0]+'.'+#strings.arraySplit(r.ipAddress, '.')[1]}]])
 				                            	</th:block>
 				                            	<th:block th:if="${r.signYN eq 'Y'}">
-				                            		[[${r.nickname }]] <i class="mdi mdi-account-circle"></i>
+				                            		[[${r.nickname }]]
+				                            		<i class="mdi mdi-account-circle"></i>
+				                            		<span class="text-primary">([[${r.animal}]])</span>
 				                            	</th:block>
 				                            	&nbsp | &nbsp
 				                            	[[${#strings.substring(r.updatedate,0,10) eq today?#dates.format(r.updatedate,'HH:mm'):#dates.format(r.updatedate,'yyyy-MM-dd')}]]
 				                            	&nbsp | &nbsp
 				                            	<i class="mdi mdi-cellphone-iphone" th:if="${r.pcYN eq 'N'}"></i>
 				                            </h6>
-				                            <h3 th:class="${r.reYN} eq 'N'?'':'pl-2'">
+				                            <h4 th:class="(${r.reYN} eq 'N'?'':'pl-2')+' mb-0'">
 				                            	[[${r.replyText}]]
-				                            	<button class="btn redel"><h3><i class="fas fa-window-close"></i></h3></button>
-				                            </h3>
-				                            
+				                            	<button class="btn redel p-0"><i class="fas fa-window-close"></i></button>
+				                            </h4>
 			                            </div>
 		                            </div>
-		                            <hr>
+		                            <hr class="mt-1 mb-1 ml-0 mr-0">
 									</th:block>
 	                            </div>
 	                        </div>

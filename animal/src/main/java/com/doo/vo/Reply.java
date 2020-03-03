@@ -39,7 +39,7 @@ public class Reply {
 	
 	private String replyText;
 	private String replyer;
-	private String animal;
+	private Long animal_no;
 	
 	private String pw;
 	private Long rref;
@@ -67,4 +67,6 @@ public class Reply {
 	private String nickname;
 	@Transient
 	private String signYN;
+	@Transient
+	private String animal;
 }

@@ -19,7 +19,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.doo.persistence.AnimalNicknameRepository;
-import com.doo.persistence.AnimalRepository;
 import com.doo.persistence.ReplyRepository;
 import com.doo.security.SecurityUser;
 import com.doo.vo.Animal;
@@ -39,12 +38,11 @@ public class ReplyController {
 	@Autowired
 	private AnimalNicknameRepository anr;
 	
-	@Autowired
-	private AnimalRepository ar;
+//	@Autowired
+//	private AnimalRepository ar;
 	
 	@PostMapping("/write")
 	public String writePost(Reply r, Long b_no) {
-		System.out.println(r);
 		Board b=new Board();
 		b.setB_no(b_no);
 		r.setBoard(b);
@@ -109,10 +107,11 @@ public class ReplyController {
 			
 			Optional<AnimalNickname> oan=anr.findById(ae); //animal_no찾기
 			if(oan.isPresent()) {//있으면
-				oan.ifPresent(e->ar.findById(e.getAnimal_no()).ifPresent(f->r.setAnimal(f.getAnimal_name())));//찾아서 r에 담기
+				//oan.ifPresent(e->ar.findById(e.getAnimal_no()).ifPresent(f->r.setAnimal(f.getAnimal_name())));//찾아서 r에 담기
+				oan.ifPresent(e->r.setAnimal_no(e.getAnimal_no()));
 			}else {//없으면 동물 부여
 				//남은 동물들
-				List<Animal> remainAnimalList=anr.getRemainAnimal(b_no);
+				List<Animal> remainAnimalList=anr.getRemainAnimal(b_no); //where not animal_no in () 으로 찾은거라 이거중에 아무거나 하면 됌
 				int no=(int)(remainAnimalList.size()*Math.random()); //랜덤만들고
 
 				AnimalNickname an=new AnimalNickname();
@@ -121,11 +120,11 @@ public class ReplyController {
 				an.setEmail(mem.getEmail()); //숫자3개 담아서
 				anr.save(an); //저장
 				
-				r.setAnimal(remainAnimalList.get(no).getAnimal_name());
+				//r.setAnimal(remainAnimalList.get(no).getAnimal_name());
 			}
 			
 		} else {
-			r.setAnimal("김익명");
+			r.setAnimal(null);
 		}
 		return r;
 	}
