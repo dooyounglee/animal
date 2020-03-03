@@ -90,19 +90,19 @@
                                         		<tr>
                                         			<td>[[${b.b_no}]]</td>
 	                                        		<td>
-	                                        			<a th:attr="href='/board/get?b_no='+${b.b_no}">[[${b.title}]] &#91;[[${b.rcount}]]&#93;</a><br>
-	                                        			<h6>
+	                                        			<a th:attr="href='/board/get?b_no='+${b.b_no}">[[${b.title}]] &#91;[[${b.rcount}]]&#93;</a>
+	                                        			<i class="mdi mdi-cellphone-iphone" th:if="${b.pcYN eq 'N'}"></i><br>
+	                                        			<small class="text-muted">
 	                                        				[[${b.nickname }]] <i class="mdi mdi-account-circle" th:if="${b.signYN eq 'Y'}"></i>
 	                                        				<th:block th:if="${b.signYN eq 'N'}">
 	                                        					([[${#strings.contains(b.ipAddress,':')?'localhost':#strings.arraySplit(b.ipAddress, '.')[0]+'.'+#strings.arraySplit(b.ipAddress, '.')[1]}]])
 	                                        				</th:block>
 	                                        				&nbsp;|&nbsp;
+	                                        				<br class="d-block d-md-none">
 	                                        				[[${#strings.substring(b.regdate,0,10) eq today?#dates.format(b.regdate,'HH:mm'):#dates.format(b.regdate,'yyyy-MM-dd')}]]
 	                                        				&nbsp;|&nbsp;
 	                                        				조회수 [[${b.viewCount}]]
-	                                        				&nbsp;|&nbsp;
-	                                        				<i class="mdi mdi-cellphone-iphone" th:if="${b.pcYN eq 'N'}"></i>
-	                                        			</h6>
+	                                        			</small>
 	                                        		</td>
 												</tr>
 											</th:block>
@@ -111,10 +111,23 @@
                                     <script>
 								   		$('#zero_config').DataTable({
 								   			"order": [ [ 0, "desc" ] ],
+								   			"bLengthChange": false,
 								   			"info":     false,
 								   			"columnDefs": [
-								   			    { "width": "15px", "targets": 0 }
-								   			  ]
+								   			    {"width": "15px",
+								   			     "targets": 0,},
+									   			{"targets": [ 0 ],
+									             "visible": false,},
+									            {"targets": [ 1 ],
+										         "orderable": false,},
+								                {
+								                 "targets": '_all',
+								                 "createdCell": function (td, cellData, rowData, row, col) {
+								                     //$(td).css('padding', '10px')
+								                     $(td).addClass('pl-0 pr-0')
+								                	}
+								                },
+									        ]
 								   		});
 								    </script>
                                 </div>
