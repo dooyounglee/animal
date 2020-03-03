@@ -120,6 +120,7 @@ public class ReplyController {
 				an.setEmail(mem.getEmail()); //숫자3개 담아서
 				anr.save(an); //저장
 				
+				r.setAnimal_no(an.getAnimal_no());
 				//r.setAnimal(remainAnimalList.get(no).getAnimal_name());
 			}
 			

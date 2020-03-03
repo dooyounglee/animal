@@ -31,7 +31,6 @@ public class MemberController {
 	public String loginGet() {
 		Object temp=SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(!temp.equals("anonymousUser")) {
-			System.out.println(((SecurityUser)temp).getMember());
 			log.info(""+((SecurityUser)temp).getMember());
 			return "redirect:/";
 		}

@@ -16,6 +16,7 @@ public interface BoardRepository extends CrudRepository<Board, Long> {
 			" left join Reply r on (b.b_no=r.board)" + 
 			" left join Member m on (b.writer=m.email and b.pw is null)" + 
 			" where b.delYN='N'" + 
+			"   and r.delYN='N'" +
 			" group by b.b_no")
 	public List<Object[]> findAllBoardInListPage();
 	
