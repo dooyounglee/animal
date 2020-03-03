@@ -13,10 +13,9 @@ public interface BoardRepository extends CrudRepository<Board, Long> {
 	
 	@Query("select distinct b,m, count(r_no) as rcount" + 
 			"  from Board b" + 
-			" left join Reply r on (b.b_no=r.board)" + 
+			" left join Reply r on (b.b_no=r.board and r.delYN='N')" + 
 			" left join Member m on (b.writer=m.email and b.pw is null)" + 
-			" where b.delYN='N'" + 
-			"   and r.delYN='N'" +
+			" where b.delYN='N'" +
 			" group by b.b_no")
 	public List<Object[]> findAllBoardInListPage();
 	
