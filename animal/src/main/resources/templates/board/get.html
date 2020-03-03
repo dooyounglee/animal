@@ -2,21 +2,6 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <th:block th:insert="~{fragments/head::head}"></th:block>
-<style>
-/* #replyArea div.row:not(.reply) h6{
-	background-color:#f600ff08;
-	border-radius:0.1rem;
-} */
-/* #replyArea h5, #replyArea h3{
-	margin:0px;
-} */
-/* hr{
-	margin-top:10px;
-	margin-bottom:10px;
-	margin-left:0px;
-	margin-right:0px;
-} */
-</style>
 <body class="fix-header card-no-border logo-center">
 	
 	<!-- Preloader - style you can find in spinners.css -->
@@ -93,10 +78,11 @@
 	                        <div class="card-body">
 	                        	<a class="btn btn-primary" href="/board/list">list</a>
 								<a class="btn btn-primary" href="/board/write">write</a>
-								<button id="edit" class="btn btn-warning">edit</button>
-								<button id="del"  class="btn btn-danger">del</button>
-								<input type="text" id="pw" class="form-control col-md-3" placeholder="비번을 입력하세요"
-									th:if="${#authentication.principal eq 'anonymousUser'}">
+								<th:block th:if="(${#authentication.principal eq 'anonymousUser'} and ${b.signYN eq 'N'}) 
+											  or (${#authentication.principal ne 'anonymousUser'} and ${b.signYN eq 'Y'} and ${#authentication.principal.member.email eq b.writer})">
+									<button id="edit" class="btn btn-warning">edit</button>
+									<button id="del"  class="btn btn-danger">del</button>
+								</th:block>
 	                            <h2 class="font-medium mt-4">[[${b.title}]]</h2>
 	                            <h6>
 	                            	[[${b.nickname }]] <i class="mdi mdi-account-circle" th:if="${b.pw eq null}"></i>
@@ -151,7 +137,7 @@
                                 <div id="replyArea">
 		                            <th:block th:each="r:${rlist}">
 		                            <div th:class="'row'+(${r.reYN} eq 'N'?' reply':'')" th:data-rno='${r.rno}' data-reform='n'>
-		                            	<div th:class="'col-12 '+(${r.reYN} eq 'Y'?'pl-5':'')">
+		                            	<div th:class="'col-12 '+(${r.reYN} eq 'Y'?'pl-4 pl-md-5':'')">
 				                            <h6 th:class="(${r.reYN} eq 'N'?'':'pl-2')+' mb-0 text-muted'">
 				                            	<i th:if="${r.reYN} eq 'Y'" class="mdi mdi-subdirectory-arrow-right"></i>
 				                            	<th:block th:if="${r.signYN eq 'N'}">
@@ -165,7 +151,6 @@
 				                            	</th:block>
 				                            	&nbsp | &nbsp
 				                            	[[${#strings.substring(r.updatedate,0,10) eq today?#dates.format(r.updatedate,'HH:mm'):#dates.format(r.updatedate,'yyyy-MM-dd')}]]
-				                            	&nbsp | &nbsp
 				                            	<i class="mdi mdi-cellphone-iphone" th:if="${r.pcYN eq 'N'}"></i>
 				                            </h6>
 				                            <h4 th:class="(${r.reYN} eq 'N'?'':'pl-2')+' mb-0'">
@@ -211,6 +196,11 @@
     <script th:inline="javascript">
 	var formObj1 = $("#f1");
     $("#del").click(function(){
+    	var mem=[[${#authentication.principal}]]
+    	var pw;
+    	if(mem=='anonymousUser'){
+    		pw=prompt("비번을 입력하세요");
+    	}
 		$.ajax({
 			type:'post',
 			url:'/board/pw',
@@ -222,7 +212,7 @@
 				xhr.setRequestHeader(csrf.headerName,csrf.token)
 			},
 			success:function(data){
-				if($('#pw').val()==data.pw){
+				if(pw==data.pw){
 					alert("삭제할께요ㅠ");
 					formObj1.attr("action","/board/del");
 					formObj1.attr("method", "post");
@@ -244,19 +234,23 @@
 	var formObj2 = $("#f2");
 	var csrf=JSON.parse('[[${_csrf}]]');
     $("#edit").click(function(){
+    	var mem=[[${#authentication.principal}]]
+    	var pw;
+    	if(mem=='anonymousUser'){
+    		pw=prompt("비번을 입력하세요");
+    	}
 		$.ajax({
 			type:'post',
 			url:'/board/pw',
 			data:JSON.stringify({
 				b_no:[[${b.b_no}]],
 			}),
-			//dataType:'json',
 			contentType:"application/json",
 			beforeSend:function(xhr){
 				xhr.setRequestHeader(csrf.headerName,csrf.token)
 			},
 			success:function(data){
-				if($('#pw').val()==data.pw){
+				if(pw==data.pw){
 					alert("수정하러 가실께요~");
 					formObj2.attr("action","/board/edit");
 					formObj2.attr("method", "get");
@@ -305,7 +299,7 @@
     </script>
 
 	<script th:inline="javascript">
-	    $(document).on("touchstart click","#rere",function(){
+	    $(document).on("click","#rere",function(){
 	    	var this_=$(this)
 	    	var csrf=JSON.parse('[[${_csrf}]]');
 	    	var b_no=[[${b.b_no}]]
@@ -353,7 +347,6 @@
 					xhr.setRequestHeader(csrf.headerName,csrf.token)
 				},
 				success:function(data){
-					console.log(data)
 					if(pw==data.pw){
 						$.ajax({
 							type:'post',
