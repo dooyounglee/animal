@@ -1,32 +1,375 @@
 <html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-	<div th:insert="~{fragments/header::header}"></div>
-	<a href="/board/list">list</a>
-	<a href="/board/write">write</a><br>
-	[[${b}]]<br>
-	<a th:attr="href='/board/edit?b_no='+${b.b_no}">edit</a>
-	<form action="/board/del" method="post">
+<th:block th:insert="~{fragments/head::head}"></th:block>
+<body class="fix-header card-no-border logo-center">
+	
+	<!-- Preloader - style you can find in spinners.css -->
+ 	<th:block th:insert="~{fragments/head::preloader}"></th:block>
+	<!-- End of Preloader - style you can find in spinners.css -->
+	
+	<!-- Main wrapper -->
+	<div id="main-wrapper">
+	
+		<!-- Topbar header - style you can find in pages.scss -->
+	        <header class="topbar">
+	        	<th:block th:insert="~{fragments/header::header}"></th:block>
+	        </header>
+	    <!-- End Topbar header -->
+	    
+	    <!-- Left-sidebar -->
+        <aside class="left-sidebar">
+			<th:block th:insert="~{fragments/menu::menu}"></th:block>
+        </aside>
+        <!-- End of Left-sidebar -->
+        
+        <!-- Page wrapper  -->
+        <div class="page-wrapper">
+        
+        	<!-- ============================================================== -->
+            <!-- Container fluid  -->
+            <!-- ============================================================== -->
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 col-12 align-self-center">
+                        <h3 class="text-themecolor mb-0 mt-0">Q&A</h3>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item active">Q&A</li>
+                        </ol>
+                    </div>
+                    <div class="col-md-7 col-12 align-self-center d-none d-md-block">
+                        <div class="d-flex mt-2 justify-content-end">
+                            <div class="d-flex mr-3 ml-2">
+                                <div class="chart-text mr-2">
+                                    <h6 class="mb-0"><small>THIS MONTH</small></h6>
+                                    <h4 class="mt-0 text-info">$58,356</h4>
+                                </div>
+                                <div class="spark-chart">
+                                    <div id="monthchart"></div>
+                                </div>
+                            </div>
+                            <div class="d-flex mr-3 ml-2">
+                                <div class="chart-text mr-2">
+                                    <h6 class="mb-0"><small>LAST MONTH</small></h6>
+                                    <h4 class="mt-0 text-primary">$48,356</h4>
+                                </div>
+                                <div class="spark-chart">
+                                    <div id="lastmonthchart"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- ============================================================== -->
+                <!-- Row -->
+                <div class="row">
+                    <!-- Column -->
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card">
+	                        <div class="card-body">
+	                        	<a class="btn btn-primary" href="/board/list">list</a>
+								<a class="btn btn-primary" href="/board/write">write</a>
+								<th:block th:if="(${#authentication.principal eq 'anonymousUser'} and ${b.signYN eq 'N'}) 
+											  or (${#authentication.principal ne 'anonymousUser'} and ${b.signYN eq 'Y'} and ${#authentication.principal.member.email eq b.writer})">
+									<button id="edit" class="btn btn-warning">edit</button>
+									<button id="del"  class="btn btn-danger">del</button>
+								</th:block>
+	                            <h2 class="font-medium mt-4">[[${b.title}]]</h2>
+	                            <h6>
+	                            	[[${b.nickname }]] <i class="mdi mdi-account-circle" th:if="${b.pw eq null}"></i>
+                      				<th:block th:if="${b.signYN eq 'N'}">
+                      					([[${#strings.contains(b.ipAddress,':')?'localhost':#strings.arraySplit(b.ipAddress, '.')[0]+'.'+#strings.arraySplit(b.ipAddress, '.')[1]}]])
+                      				</th:block>
+	                                &nbsp | &nbsp
+	                            	[[${#dates.format(b.regdate,'yyyy-MM-dd HH:mm:ss')}]]
+	                            	&nbsp | &nbsp
+	                            	조회수 [[${b.viewCount}]]
+	                            	&nbsp | &nbsp
+	                            	<i class="mdi mdi-cellphone-iphone" th:if="${b.pcYN eq 'N'}"></i>
+	                            </h6>
+	                            <hr>
+	                            <th:block th:utext='${b.content}'></th:block>
+	                        </div>
+                        </div>
+                    </div>
+                    <!-- Column -->
+                </div>
+                <!-- Row -->
+				<!-- Row -->
+                <div class="row">
+                    <!-- Column -->
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card">
+	                        <div class="card-body">
+	                            <form class="form-material row" action="/reply/write" method="post">
+                                    <div th:class="'form-group '+(${#authentication.principal} eq 'anonymousUser'?'col-md-1':'col-md-2')+' col-6 mb-2'">
+                                        <input type="text" name="replyer" class="form-control form-control-line"
+                                        	th:value="${#authentication.principal} eq 'anonymousUser'?'':${#authentication.principal.member.email}"
+                                        	th:readonly="${#authentication.principal} eq 'anonymousUser'?'false':'true'"
+                                        	placeholder="닉네임">
+                                    </div>
+                                    <div class="form-group col-md-1 col-6 mb-2" th:if="${#authentication.principal eq 'anonymousUser'}">
+                                        <input type="text" name="pw" class="form-control form-control-line"
+                                        	placeholder="비번">
+                                    </div>
+                                    <div class="form-group col-md-9 col-9 mb-2">
+                                        <input type="text" name="replyText" class="form-control" placeholder="내용을 입력하세요">
+                                    </div>
+									<div class="form-group col-md-1 col-3 mb-2">
+										<button class="btn btn-success">write</button>
+									</div>
+									<input type="hidden" name="pcYN" id="rePC" value="">
+                                    <input type=hidden name="b_no" th:value="${b.b_no}" readonly>
+									<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                </form>
+                                <script>
+                                $('#rePC').val(isMobile()?'N':'Y')
+                                </script>
+                                <div id="replyArea">
+		                            <th:block th:each="r:${rlist}">
+		                            <div th:class="'row'+(${r.reYN} eq 'N'?' reply':'')" th:data-rno='${r.rno}' data-reform='n'>
+		                            	<div th:class="'col-12 '+(${r.reYN} eq 'Y'?'pl-4 pl-md-5':'')">
+				                            <h6 th:class="(${r.reYN} eq 'N'?'':'pl-2')+' mb-0 text-muted'">
+				                            	<i th:if="${r.reYN} eq 'Y'" class="mdi mdi-subdirectory-arrow-right"></i>
+				                            	<th:block th:if="${r.signYN eq 'N'}">
+				                            		[[${r.nickname}]]
+				                            		([[${#strings.contains(r.ipAddress,':')?'localhost':#strings.arraySplit(r.ipAddress, '.')[0]+'.'+#strings.arraySplit(r.ipAddress, '.')[1]}]])
+				                            	</th:block>
+				                            	<th:block th:if="${r.signYN eq 'Y'}">
+				                            		[[${r.nickname }]]
+				                            		<i class="mdi mdi-account-circle"></i>
+				                            		<span class="text-primary">([[${r.animal}]])</span>
+				                            	</th:block>
+				                            	&nbsp | &nbsp
+				                            	[[${#strings.substring(r.updatedate,0,10) eq today?#dates.format(r.updatedate,'HH:mm'):#dates.format(r.updatedate,'yyyy-MM-dd')}]]
+				                            	<i class="mdi mdi-cellphone-iphone" th:if="${r.pcYN eq 'N'}"></i>
+				                            </h6>
+				                            <h4 th:class="(${r.reYN} eq 'N'?'':'pl-2')+' mb-0'">
+				                            	[[${r.replyText}]]
+				                            	<button class="btn redel p-0"><i class="fas fa-window-close"></i></button>
+				                            </h4>
+			                            </div>
+		                            </div>
+		                            <hr class="mt-1 mb-1 ml-0 mr-0">
+									</th:block>
+	                            </div>
+	                        </div>
+                        </div>
+                    </div>
+                    <!-- Column -->
+                </div>
+                <!-- Row -->
+                <!-- ============================================================== -->
+                <!-- End PAge Content -->
+                <!-- ============================================================== -->
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Container fluid  -->
+            <!-- ============================================================== -->
+
+			<!-- footer -->
+			<footer class="footer">
+				<th:block th:insert="~{fragments/footer::footer}"></th:block>
+	        </footer>
+			<!--  End of footer -->
+	
+		</div>
+        <!-- End of Page wrapper  -->
+        
+	</div>
+	<!-- End of Main wrapper -->
+
+	<form id='f1'>
 		<input type="hidden" name="b_no" th:value="${b.b_no}">
-		<button>del</button>
+		<input type="hidden" name="pw">
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 	</form>
-	<hr>
-	<form action="/reply/write" method="post">
-		<input name="replyer" th:value="${#authentication.principal} eq 'anonymousUser'?'anonymousUser':${#authentication.principal.member.email}">
-		<input name="replyText">
-		<input name="b_no" th:value="${b.b_no}">
-		<button>write</button>
+    <script th:inline="javascript">
+	var formObj1 = $("#f1");
+    $("#del").click(function(){
+    	var mem=[[${#authentication.principal}]]
+    	var pw;
+    	if(mem=='anonymousUser'){
+    		pw=prompt("비번을 입력하세요");
+    	}
+		$.ajax({
+			type:'post',
+			url:'/board/pw',
+			data:JSON.stringify({
+				b_no:[[${b.b_no}]],
+			}),
+			contentType:"application/json",
+			beforeSend:function(xhr){
+				xhr.setRequestHeader(csrf.headerName,csrf.token)
+			},
+			success:function(data){
+				if(pw==data.pw){
+					alert("삭제할께요ㅠ");
+					formObj1.attr("action","/board/del");
+					formObj1.attr("method", "post");
+					formObj1.submit();
+				}else{
+					alert("비번이 달라요ㅠ");
+				}
+			},
+		})
+	});
+    </script>
+    
+    <form id='f2'>
+		<input type="hidden" name="b_no" th:value="${b.b_no}">
+		<input type="hidden" name="pw">
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 	</form>
-	<hr>
-	<th:block th:each="r:${rlist}">
-		[[${r}]]<br>
-	</th:block>
-	<div th:insert="~{fragments/footer::footer}"></div>
+    <script th:inline="javascript">
+	var formObj2 = $("#f2");
+	var csrf=JSON.parse('[[${_csrf}]]');
+    $("#edit").click(function(){
+    	var mem=[[${#authentication.principal}]]
+    	var pw;
+    	if(mem=='anonymousUser'){
+    		pw=prompt("비번을 입력하세요");
+    	}
+		$.ajax({
+			type:'post',
+			url:'/board/pw',
+			data:JSON.stringify({
+				b_no:[[${b.b_no}]],
+			}),
+			contentType:"application/json",
+			beforeSend:function(xhr){
+				xhr.setRequestHeader(csrf.headerName,csrf.token)
+			},
+			success:function(data){
+				if(pw==data.pw){
+					alert("수정하러 가실께요~");
+					formObj2.attr("action","/board/edit");
+					formObj2.attr("method", "get");
+					formObj2.submit();
+				}else{
+					alert("비번이 달라요ㅠ");
+				}
+			},
+		})
+	});
+    </script>
+    
+    <script th:inline="javascript">
+    $(document).on("click",".reply",function(){
+    	$('#rereplyForm').remove();
+    	var re_yn=$(this).data('reform');
+    	$('.reply').data('reform','n')
+    	var mem=[[${#authentication.principal eq 'anonymousUser'?'anonymousUser':#authentication.principal.member.email}]];
+    	if(re_yn=='n'){
+	    	$(this).data('reform','y')
+	    	var str='<div class="row" id="rereplyForm">' 
+	    	if(mem=='anonymousUser'){
+	    		str+='<div class="form-group col-md-1 mt-3">'
+    	    	str+='<input type="text" id="replyer" class="form-control form-control-line" placeholder="닉네임"></div>'
+    	    	str+='<div class="form-group col-md-1 mt-3">'
+    	    	str+='<input type="text" id="repw" class="form-control" placeholder="비번">'
+    	    	str+='</div>'	
+	    	}else{
+	    		str+='<div class="form-group col-md-2 mt-3">'
+    	    	str+='<input type="text" id="replyer" class="form-control form-control-line" value="'
+    	    	str+=mem
+    	    	str+='" readonly></div>'
+	    	}
+	    	str+='<div class="form-group col-md-9 mt-3">'
+	    	str+='<input type="text" id="replyText" class="form-control" placeholder="내용을 입력하세요">'
+	    	str+='</div>'
+	    	str+='<div class="form-group col-md-1 mt-3">'
+	    	str+='<button class="btn btn-success" id="rere">write</button>'
+	    	str+='</div>'
+	    	str+='</div>'
+	    	$(this).after(str)
+    	}else if(re_yn=='y'){
+    		
+    	}
+	});
+    </script>
+
+	<script th:inline="javascript">
+	    $(document).on("click","#rere",function(){
+	    	var this_=$(this)
+	    	var csrf=JSON.parse('[[${_csrf}]]');
+	    	var b_no=[[${b.b_no}]]
+			$.ajax({
+				type:'post',
+				url:'/reply/replyAdd',
+				data:JSON.stringify({
+					replyer:$('#replyer').val(),
+					replyText:$('#replyText').val(),
+					b_no:[[${b.b_no}]],
+					rref:$(this_).closest('div.row').prev().data('rno'),
+					pw:$('#repw').val(),
+					pcYN:isMobile()?'N':'Y',
+				}),
+				contentType:"application/json",
+				beforeSend:function(xhr){
+					xhr.setRequestHeader(csrf.headerName,csrf.token)
+				},
+				success:function(data){
+					$('#replyArea').load("/board/get?b_no=[[${b.b_no}]] #replyArea")
+				},
+			})
+		});
+    </script>
+    
+    <form id='f3'>
+		<input type="hidden" name="rno">
+		<input type="hidden" name="pw">
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+	</form>
+    <script th:inline="javascript">
+    	$('.redel').click(function(e){
+    		var this_=$(this)
+    		e.stopPropagation()
+    		var pw=prompt("비번입력해봐")
+    		if(pw==null)return false;
+    		$.ajax({
+				type:'post',
+				url:'/reply/pw',
+				data:JSON.stringify({
+					rno:this_.closest('div.row').data('rno'),
+				}),
+				contentType:"application/json",
+				beforeSend:function(xhr){
+					xhr.setRequestHeader(csrf.headerName,csrf.token)
+				},
+				success:function(data){
+					if(pw==data.pw){
+						$.ajax({
+							type:'post',
+							url:'/reply/replyDel',
+							data:JSON.stringify({
+								rno:data.rno,
+							}),
+							contentType:"application/json",
+							beforeSend:function(xhr){
+								xhr.setRequestHeader(csrf.headerName,csrf.token)
+							},
+							success:function(data){
+								$('#replyArea').load("/board/get?b_no=[[${b.b_no}]] #replyArea")
+								alert("삭제되었습니다.")
+							}
+						})
+					}else{
+						alert("비번이 달라요ㅠ");
+					}
+					
+				},
+			})
+    	})
+    </script>
 </body>
 </html>

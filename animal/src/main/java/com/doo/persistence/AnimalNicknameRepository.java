@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import com.doo.vo.Animal;
-import com.doo.vo.AnimalEmail;
 import com.doo.vo.AnimalNickname;
+import com.doo.vo.dto.AnimalEmail;
 
 public interface AnimalNicknameRepository extends CrudRepository<AnimalNickname, AnimalEmail>{
 

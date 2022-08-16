@@ -26,7 +26,6 @@ public class SecurityUser extends User {
 	public SecurityUser(Member member) {
 		//super(member.getUid(),"{noop}"+member.getUpw(),makeGrantedAuthority(member.getRoles()));
 		super(member.getEmail(),member.getPw(),makeGrantedAuthority(member.getRole()));
-		log.info(""+member);
 		this.member=member;
 	}
 

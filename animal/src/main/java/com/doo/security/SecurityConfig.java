@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,9 +31,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		log.info("security config..............");;
+		log.info("security config1..............");;
 
-		http.authorizeRequests().antMatchers("/*").permitAll();
+		http.authorizeRequests().antMatchers("/**").permitAll();
 		
 		http.formLogin().loginPage("/member/login");
 		http.logout().logoutUrl("/member/logout").invalidateHttpSession(true).logoutSuccessUrl("/");; //
@@ -40,6 +41,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		//로그인한 사용자..... 정확히 모르겠어
 		http.userDetailsService(us);
 
+	}
+	
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		// TODO Auto-generated method stub
+		log.info("security config2..............");
+		
+		web.ignoring().antMatchers("/material-pro/**");
+		//super.configure(web);
 	}
 
 //	private PersistentTokenRepository getJDBCRepository() {

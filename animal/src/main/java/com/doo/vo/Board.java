@@ -11,15 +11,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -29,6 +32,7 @@ import lombok.ToString;
 @Table(name = "board")
 @EqualsAndHashCode(of = "b_no")
 @ToString(exclude="reply")
+@NoArgsConstructor
 public class Board {
 
 	@Id
@@ -37,6 +41,14 @@ public class Board {
 	private String title;
 	private String writer;
 	private String content;
+	
+	private String pw;
+	private String ipAddress;
+	@Column(name="del_yn")
+	private String delYN="N";
+	private Long viewCount=0L;
+	@Column(name="pc_yn")
+	private String pcYN;
 
 	@Column(updatable=false)
 	@CreationTimestamp
@@ -47,4 +59,14 @@ public class Board {
 	@JsonIgnore
 	@OneToMany(mappedBy="board", fetch=FetchType.LAZY)
 	private List<Reply> reply;
+	
+	
+	@Transient
+	private Long rcount;
+	@Transient
+	private String nickname;
+	@Transient
+	private String signYN;
+	
+	
 }

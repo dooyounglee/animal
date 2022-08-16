@@ -5,10 +5,17 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import com.doo.vo.dto.AnimalEmail;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @author 이두영
+ * 게시판에 누가 어떤 동물을 가져갔는지 현황판
+ *
+ */
 @Getter
 @Setter
 @Entity

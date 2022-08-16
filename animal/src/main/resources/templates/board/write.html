@@ -1,20 +1,217 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-	<div th:insert="~{fragments/header::header}"></div>
-	<a href="/board/list">게시판</a>
-	<form action="/board/write" method="post" th:with="b=${b}">
-		<input type="hidden" name="b_no" th:value="${b}?${b.b_no}:''"><br>
-		<input name="title" th:value="${b}?${b.title}:''"><br>
-		<input name="content" th:value="${b}?${b.content}:''"><br>
-		<input type="text" name="writer" th:value="${#authentication.principal} eq 'anonymousUser'?'anonymousUser':${#authentication.principal.member.email}" readonly>
-		<button type="submit" th:text="${b}?'edit':'write'">write</button>
+<th:block th:insert="~{fragments/head::head}"></th:block>
+<body class="fix-header card-no-border logo-center">
+	<!-- Preloader - style you can find in spinners.css -->
+ 	<th:block th:insert="~{fragments/head::preloader}"></th:block>
+	<!-- End of Preloader - style you can find in spinners.css -->
+	
+	<!-- Main wrapper -->
+	<div id="main-wrapper">
+	
+		<!-- Topbar header - style you can find in pages.scss -->
+	        <header class="topbar">
+	        	<th:block th:insert="~{fragments/header::header}"></th:block>
+	        </header>
+	    <!-- End Topbar header -->
+	    
+	    <!-- Left-sidebar -->
+        <aside class="left-sidebar">
+			<th:block th:insert="~{fragments/menu::menu}"></th:block>
+        </aside>
+        <!-- End of Left-sidebar -->
+        
+        <!-- Page wrapper  -->
+        <div class="page-wrapper">
+        
+        	<!-- ============================================================== -->
+            <!-- Container fluid  -->
+            <!-- ============================================================== -->
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 col-12 align-self-center">
+                        <h3 class="text-themecolor mb-0 mt-0">Q&A</h3>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item active">Q&A</li>
+                        </ol>
+                    </div>
+                    <div class="col-md-7 col-12 align-self-center d-none d-md-block">
+                        <div class="d-flex mt-2 justify-content-end">
+                            <div class="d-flex mr-3 ml-2">
+                                <div class="chart-text mr-2">
+                                    <h6 class="mb-0"><small>THIS MONTH</small></h6>
+                                    <h4 class="mt-0 text-info">$58,356</h4>
+                                </div>
+                                <div class="spark-chart">
+                                    <div id="monthchart"></div>
+                                </div>
+                            </div>
+                            <div class="d-flex mr-3 ml-2">
+                                <div class="chart-text mr-2">
+                                    <h6 class="mb-0"><small>LAST MONTH</small></h6>
+                                    <h4 class="mt-0 text-primary">$48,356</h4>
+                                </div>
+                                <div class="spark-chart">
+                                    <div id="lastmonthchart"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                            	<div class="form-group mt-12 row">
+                                    <div class="col-md-12">
+                                        <input class="form-control" id="title" th:value="${b}?${b.title}:''" placeholder="제목">
+                                    </div>
+                                </div>
+                                <div class="form-group mt-12 row" th:if="${#authentication.principal} eq 'anonymousUser'">
+                                    <div class="col-md-6">
+                                        <input class="form-control" id="nickname" th:value="${b}?${b.nickname}:''" placeholder="닉네임">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input class="form-control" id="pw" th:value="${b}?${b.pw}:''" placeholder="비번">
+                                    </div>
+                                </div>
+                                <div class="summernote">
+                                    <h3>Default Summernote</h3>
+                                </div>
+                            </div>
+                            <button class="btn btn-success" onclick="abc()" th:text="${b}?'edit':'write'">aaa</button>
+                        </div>
+                        
+                        <!-- <div class="card">
+                            <div class="card-body">
+                                <div class="inline-editor">
+                                    <h4 class="card-title mb-5">You can select content and edit inline</h4>
+                                    <h3>Title Heading will be
+                                        <b>apear here</b>
+                                    </h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elitconsectetur adipisicing elit,
+                                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                        veniam, quis nostrud Exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                    <ul class="list-icons">
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Lorem ipsum dolor sit amet</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Consectetur adipiscing elit</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Integer molestie lorem at massa </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="click2edit mb-5">Click on Edite button and change the text then save it.</div>
+                                <button id="edit" class="btn btn-info btn-rounded" onclick="edit()" type="button">Edit</button>
+                                <button id="save" class="btn btn-success btn-rounded" onclick="save()" type="button">Save</button>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End PAge Content -->
+                <!-- ============================================================== -->
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Container fluid  -->
+            <!-- ============================================================== -->
+
+			<!-- footer -->
+			<footer class="footer">
+				<th:block th:insert="~{fragments/footer::footer}"></th:block>
+	        </footer>
+			<!--  End of footer -->
+	
+		</div>
+        <!-- End of Page wrapper  -->
+        
+	</div>
+	<!-- End of Main wrapper -->
+	
+	<script th:inline="javascript">
+    $(function () {
+        $('.summernote').summernote({
+            height: 350, // set editor height
+            minHeight: null, // set minimum height of editor
+            maxHeight: null, // set maximum height of editor
+            focus: false, // set focus to editable area after initializing summernote
+            callbacks : {
+				onImageUpload : function(files) {
+					var csrf=JSON.parse('[[${_csrf}]]');
+					var _this=this;
+					    for(var i=0; i<files.length; i++){
+					    	var formData = new FormData();
+					        formData.append('uploadFile', files[i]);
+						   	$.ajax({
+						        url: "upload",
+						        data: formData,
+						        processData: false,
+						        contentType: false,
+						        type: 'POST',
+						        //contentType:"application/json",
+								beforeSend:function(xhr){
+									xhr.setRequestHeader(csrf.headerName,csrf.token)
+								},
+						        success: function (data) {
+						            $(_this).summernote('editor.insertImage', "/resources/upload/"+data);
+						        }
+						    });
+					    }
+		            alert("이미지 업로드 성공");
+				}
+			},
+        });
+        $('.inline-editor').summernote({
+            airMode: true
+        });
+        $('.summernote').summernote('code',[[${b}?${b.content}:'']]);
+    });
+    window.edit = function () {
+        $(".click2edit").summernote()
+    },
+    window.save = function () {
+        $(".click2edit").summernote('destroy');
+    }
+	</script>
+	<form id='f1' th:with="b=${b}">
+		<input type="hidden" name="b_no" th:value="${b}?${b.b_no}:''">
+		<input type="hidden" name="title" value=""><br>
+		<input type="hidden" name="content" value=""><br>
+		<input type="hidden" name="writer" th:value="${#authentication.principal eq 'anonymousUser'?'anonymousUser':#authentication.principal.member.email}">
+		<input type="hidden" name="pcYN">
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 	</form>
-	<div th:insert="~{fragments/footer::footer}"></div>
+	<script th:inline="javascript">
+	function abc(){
+		var str = $('.summernote').summernote('code');
+		var formObj = $("#f1");
+		formObj.attr("action","write");
+		formObj.attr("method", "post");
+		formObj.children("input[name=title]").val($('#title').val())
+		formObj.children("input[name=content]").val(str)
+		if(formObj.children("input[name=writer]").val()=='anonymousUser'){
+			formObj.children("input[name=writer]").val($('#nickname').val())
+			formObj.append('<input type="hidden" name="pw">')
+			formObj.children("input[name=pw]").val($('#pw').val())
+		}
+		formObj.children("input[name=pcYN]").val(isMobile()?'N':'Y')
+		formObj.submit();
+    }
+	</script>
+
 </body>
 </html>

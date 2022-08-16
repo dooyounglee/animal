@@ -1,0 +1,66 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="menu">
+
+<!-- Sidebar scroll-->
+<div class="scroll-sidebar">
+    <!-- Sidebar navigation-->
+    <nav class="sidebar-nav">
+        <ul id="sidebarnav">
+            <li class="nav-small-cap">PERSONAL</li>
+            <li>
+            	<a class="has-arrow" onclick="location.href='lectureList.ad'" href="lectureList.ad"><span class="hide-menu">나의 강좌 리스트</span></a>
+            	<ul id="myLecList" aria-expanded="false" class="collapse">
+                    	<li><a href="#">menu1</a></li>
+                    	<li><a href="#">menu2</a></li>
+                    	<li><a href="#">menu3</a></li>
+                </ul>
+            </li>
+            <li><a class="has-arrow" href="/board/list"><span class="hide-menu">동물놀이</span></a></li>
+            <li><a class="has-arrow" href="/chat/main"><span class="hide-menu">chat</span></a></li>
+            <li><a class="has-arrow" href="/vote/list"><span class="hide-menu">vote</span></a></li>
+            <li>
+                <a class="has-arrow" href="#" aria-expanded="false"><i class=" mdi mdi-email"></i><span class="hide-menu">쪽지함</span></a>
+                <ul aria-expanded="false" class="collapse">
+                    <li><a href="listMsg.do">보낸 쪽지함</a></li>
+                    <li><a href="listSendMsg.do">받은 쪽지함</a></li>
+                </ul>
+            </li>
+            <li>
+                <a class="has-arrow" href="#" aria-expanded="false"><i class="mdi mdi-bullseye"></i><span class="hide-menu">학생</span></a>
+                <ul aria-expanded="false" class="collapse">
+                    <li><a href="vlist.me">내 휴가</a></li>
+                </ul>
+            </li>
+            <li class="nav-devider"></li>
+            <li class="one-column">
+                <a class="has-arrow" href="#" aria-expanded="false"><i class="mdi mdi-chart-bubble"></i><span class="hide-menu">선생님</span></a>
+                <ul aria-expanded="false" class="collapse">
+                    <li><a href="applyList.lec">신청 리스트</a></li>
+                    <li><a href="tblist.do">선생님 게시판</a></li>
+                    <li><a href="sVlist.te">학생휴가 관리</a></li>
+                    <li><a href="calmain.ca">캘린더</a></li>
+                </ul>
+            </li>
+            
+            
+            <li class="nav-devider"></li>
+            <li class="nav-small-cap">EXTRA COMPONENTS</li>
+            <li class="two-column">
+                <a class="has-arrow" href="#" aria-expanded="false"><i class="mdi mdi-book-open-variant"></i><span class="hide-menu">관리자</span></a>
+                <ul aria-expanded="false" class="collapse">
+                    <li><a href="boardList.ad">게시글 관리</a></li>
+                    <li><a href="replyList.ad">댓글 관리</a></li>
+                    <li><a href="qnaList.ad">문의관리</a></li>
+                    <li><a href="declareList.ad">신고관리</a></li>
+                    <li><a href="memberList.ad">회원관리</a></li>
+                    <li><a href="vlist.me">휴가관리</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <!-- End Sidebar navigation -->
+</div>
+<!-- End Sidebar scroll-->
+
+</th:block>
+</html>

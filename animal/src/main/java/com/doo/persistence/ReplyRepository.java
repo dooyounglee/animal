@@ -10,7 +10,15 @@ import com.doo.vo.Reply;
 
 public interface ReplyRepository extends CrudRepository<Reply, Long>{
 
-	@Query("SELECT r FROM Reply r WHERE r.board = ?1 " +
-		       " AND r.r_no > 0 ORDER BY r.r_no ASC")
-		public List<Reply> getReplyOfBoard(Board board);
+	@Query( "select r,m,a" + 
+			"   from Reply r" + 
+			" left join Member m on (r.replyer=m.email and r.pw is null)" + 
+			" left join Animal a on (r.animal_no=a.animal_no) " +
+			" where r.delYN='N'" +
+			"   and r.board = ?1" +
+			"   AND r.rno > 0" +
+			" ORDER BY r.rref ASC, r.rno ASC")
+	public List<Object[]> getReplyOfBoard(Board board);
+	
+	public Reply findTop1ByOrderByRnoDesc();
 }

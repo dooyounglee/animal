@@ -3,6 +3,7 @@ package com.doo.controller;
 import org.apache.catalina.authenticator.SpnegoAuthenticator.AuthenticateAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +22,9 @@ import lombok.extern.java.Log;
 @RequestMapping("/member")
 public class MemberController {
 
-	@Autowired
-	private PasswordEncoder pe;
+	//@Autowired
+	//private PasswordEncoder pe;
+	private PasswordEncoder pe = new BCryptPasswordEncoder();
 	
 	@Autowired
 	private MemberRepository mr;
@@ -31,7 +33,6 @@ public class MemberController {
 	public String loginGet() {
 		Object temp=SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(!temp.equals("anonymousUser")) {
-			System.out.println(((SecurityUser)temp).getMember());
 			log.info(""+((SecurityUser)temp).getMember());
 			return "redirect:/";
 		}
