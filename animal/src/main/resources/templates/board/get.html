@@ -151,7 +151,7 @@
 				                            	</th:block>
 				                            	&nbsp | &nbsp
 				                            	[[${#strings.substring(r.updatedate,0,10) eq today?#dates.format(r.updatedate,'HH:mm'):#dates.format(r.updatedate,'yyyy-MM-dd')}]]
-				                            	<i class="mdi mdi-cellphone-iphone" th:if="${r.pcYN eq 'N'}"></i>
+				                            	<i class="mdi mdi-cellphone-iphone" th:if="${r.pcYN eq 'N' || r.pcYN eq ''}"></i>
 				                            </h6>
 				                            <h4 th:class="(${r.reYN} eq 'N'?'':'pl-2')+' mb-0'">
 				                            	[[${r.replyText}]]
