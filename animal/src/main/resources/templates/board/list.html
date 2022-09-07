@@ -82,13 +82,15 @@
                                         <thead>
                                             <tr>
                                             	<th>#</th>
+                                            	<th>#</th>
                                                 <th>title</th>
                                             </tr>
                                         </thead>
                                         <tbody>
 											<th:block th:each="b:${list}">
                                         		<tr>
-                                        			<td>[[${b.b_no}]]</td>
+                                        			<td></td>
+                                        			<td>[[${(b.b_no + 6) / 10}]]</td>
 	                                        		<td>
 	                                        			<a th:attr="href='/board/get?b_no='+${b.b_no}">[[${b.title}]] &#91;[[${b.rcount}]]&#93;</a>
 	                                        			<i class="mdi mdi-cellphone-iphone" th:if="${b.pcYN eq 'N'}"></i><br>
